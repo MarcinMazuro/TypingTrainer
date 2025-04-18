@@ -52,3 +52,12 @@ class StatsManager:
     
     def get_timer_ids(self):
         return self.timer_ids
+        
+    def cancel_timers(self):
+        """Cancel all active timers in the stats manager"""
+        for timer_id in self.timer_ids:
+            try:
+                self.gui_elements['root'].after_cancel(timer_id)
+            except Exception:
+                pass
+        self.timer_ids = []

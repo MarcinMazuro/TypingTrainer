@@ -121,20 +121,44 @@ class GUI:
         self.theme_manager.apply_theme(self.gui_elements)
     
     def show_menu(self):
+        # Make sure to cancel all timers before switching screens
         self.cancel_all_timers()
         
+        # Ensure these are done in the right order
+        self.root.unbind("<KeyPress>")
         self.game_frame.pack_forget()
         self.menu_frame.pack(expand=True, fill="both")
-        self.root.unbind("<KeyPress>")
     
     def exit_application(self):
+        # First cancel all timers to prevent callbacks during destruction
         self.cancel_all_timers()
-        self.root.quit()
-        self.root.destroy()
+        
+        # Unbind key events
+        self.root.unbind("<KeyPress>")
+        
+        try:
+            # Quit the mainloop first
+            self.root.quit()
+        except Exception:
+            pass
+            
+        try:
+            # Then destroy the window
+            self.root.destroy()
+        except Exception:
+            pass
     
     def cancel_all_timers(self):
-        for after_id in self.root.tk.call('after', 'info'):
-            self.root.after_cancel(after_id)
+        # Cancel stats manager timers
+        if hasattr(self, 'stats_manager'):
+            self.stats_manager.cancel_timers()
+            
+        # Cancel any other after callbacks
+        try:
+            for after_id in self.root.tk.call('after', 'info'):
+                self.root.after_cancel(after_id)
+        except Exception:
+            pass
     
     def start_game(self):
         self.menu_frame.pack_forget()
