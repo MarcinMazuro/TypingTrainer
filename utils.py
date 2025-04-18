@@ -1,7 +1,7 @@
 import random
 
-MIN_TEXT_LEN = 150
-LINE_SIZE = 30
+MIN_TEXT_LEN = 170
+LINE_SIZE = 40  # Maximum characters per line
 MIN_WORD_SIZE = 2
 MAX_WORD_SIZE = 8
 
