@@ -69,5 +69,6 @@ class TextGenerator:
                     current_length += len(word)
             else:
                 break
+        sentence += " "
         
         return sentence
