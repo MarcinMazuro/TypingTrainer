@@ -207,6 +207,7 @@ class GUI:
         self.current_index[0] = 0
     
     def on_key_press(self, event):
+        special = False
         if len(self.letter_frames.winfo_children()) == 0:
             self.create_new_sentence()
             return
@@ -217,12 +218,26 @@ class GUI:
             pressed_char = '.'
         elif event.keysym == "comma":
             pressed_char = ','
+        elif event.keysym == "BackSpace":
+            pressed_char = 'backspace'
+            special = True
         else:
             pressed_char = event.char
 
         current_theme = self.theme_manager.get_current_theme()
         
-        if self.current_index[0] < len(self.current_text[0]) and pressed_char == self.current_text[0][self.current_index[0]]:
+        if self.current_index[0] > 0 and pressed_char == "backspace":
+            letter_labels = self.letter_frames.winfo_children()
+            displayed_idx = self.displayed_indices.index(self.current_index[0] - 1) if self.current_index[0] - 1 in self.displayed_indices else -1
+            if displayed_idx >= 0:
+                deleted_letter_color = letter_labels[displayed_idx].cget("foreground")
+                print(f"Deleted letter color: {deleted_letter_color}")
+                letter_labels[displayed_idx].config(foreground=current_theme["fg"], font=("Courier", self.text_font_size))
+                self.stats_manager.update_stats_based_on_color(deleted_letter_color)
+            self.current_index[0] -= 1
+            return
+
+        if self.current_index[0] < len(self.current_text[0]) and pressed_char == self.current_text[0][self.current_index[0]] and not special:
             displayed_idx = self.displayed_indices.index(self.current_index[0]) if self.current_index[0] in self.displayed_indices else -1
             
             letter_labels = self.letter_frames.winfo_children()
@@ -231,7 +246,7 @@ class GUI:
             
             self.stats_manager.register_keystroke(True)
             self.current_index[0] += 1
-        else:
+        elif not special:
             displayed_idx = self.displayed_indices.index(self.current_index[0]) if self.current_index[0] in self.displayed_indices else -1
             
             letter_labels = self.letter_frames.winfo_children()

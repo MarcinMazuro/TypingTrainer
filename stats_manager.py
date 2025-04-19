@@ -35,7 +35,7 @@ class StatsManager:
         elapsed_minutes = (time.time() - self.start_time) / 60
         
         if elapsed_minutes > 0:
-            wpm = int((self.chars_typed / 5) / elapsed_minutes)
+            wpm = int((self.correct_keystrokes / 5) / elapsed_minutes)
         else:
             wpm = 0
             
@@ -61,3 +61,14 @@ class StatsManager:
             except Exception:
                 pass
         self.timer_ids = []
+
+    def update_stats_based_on_color(self, color):
+        """Update statistics based on the color of the deleted letter."""
+        if color.lower() in ("red", "#ff4444"):
+            self.total_keystrokes -= 1
+        elif color.lower() in ("green", "#00cc00"):
+            self.total_keystrokes -= 1
+            self.correct_keystrokes -= 1
+        # Add more color-based logic if needed
+
+        self.update_stats()
