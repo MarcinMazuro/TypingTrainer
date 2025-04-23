@@ -69,6 +69,15 @@ class GameScreen:
         row = 0
         displayed_indices = []
         
+        # Get the current theme colors
+        fg_color = "#000000"  # Default foreground color
+        bg_color = "#ffffff"  # Default background color
+        
+        if self.theme_manager:
+            current_theme = self.theme_manager.get_current_theme()
+            fg_color = current_theme["fg"]
+            bg_color = current_theme["bg"]
+        
         for i, char in enumerate(text):
             display_char = char
 
@@ -77,9 +86,9 @@ class GameScreen:
                 row += 1
                 continue
                 
-            # Add theme colors to the letter labels based on current theme
+            # Apply theme colors to the letter labels
             letter_label = tk.Label(self.letter_frames, text=display_char, font=("Courier", self.text_font_size), 
-                                width=1, borderwidth=0, relief="flat")
+                                width=1, borderwidth=0, relief="flat", fg=fg_color, bg=bg_color)
             letter_label.grid(row=row, column=column, padx=1)
             
             displayed_indices.append(i)

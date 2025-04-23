@@ -54,14 +54,19 @@ class ThemeManager:
         self.root.config(bg=current_theme["bg"])
         
         # Apply theme to main frames
-        for frame_name in ['menu_frame', 'game_frame', 'results_frame', 'custom_keys_frame']:
+        for frame_name in ['menu_frame', 'game_frame', 'results_frame', 'custom_keys_frame', 'main_menu_frame', 'custom_time_frame']:
             if frame_name in gui_elements:
                 gui_elements[frame_name].config(bg=current_theme["bg"])
         
-        # Apply theme to padding frames - make sure these match the background
+        # IMPORTANT FIX: Ensure padding frames are explicitly updated
+        # This addresses the issue of dark padding in light mode
         if 'padding_frames' in gui_elements:
             for frame in gui_elements['padding_frames']:
-                frame.config(bg=current_theme["bg"])
+                # Explicitly force the background color update for padding frames
+                frame.configure(bg=current_theme["bg"])
+                # Make sure any children of padding frames also get updated
+                for child in frame.winfo_children():
+                    child.configure(bg=current_theme["bg"])
         
         # Apply to menu screen
         if 'menu_frame' in gui_elements:
@@ -70,6 +75,10 @@ class ThemeManager:
                     widget.config(bg=current_theme["bg"], fg=current_theme["fg"])
                 elif isinstance(widget, gui_elements['tk'].Frame):
                     widget.config(bg=current_theme["bg"])
+                    # Check if this is a padding frame
+                    if widget in gui_elements.get('padding_frames', []):
+                        widget.configure(bg=current_theme["bg"])
+                    
                     for child in widget.winfo_children():
                         if isinstance(child, gui_elements['tk'].Button):
                             child.config(bg=current_theme["button_bg"], fg=current_theme["button_fg"])
@@ -105,11 +114,18 @@ class ThemeManager:
         
         if 'letter_frames' in gui_elements:
             gui_elements['letter_frames'].config(bg=current_theme["bg"])
-            # Update letter display colors
+            # Update letter display colors while preserving correct/incorrect states
             for widget in gui_elements['letter_frames'].winfo_children():
-                if widget.cget("foreground") == "green":
-                    widget.config(bg=current_theme["bg"], fg=current_theme["correct"])
-                elif widget.cget("foreground") == "red":
-                    widget.config(bg=current_theme["bg"], fg=current_theme["incorrect"])
-                else:
-                    widget.config(bg=current_theme["bg"], fg=current_theme["fg"])
+                # Always update the background color
+                widget.config(bg=current_theme["bg"])
+                
+                # Save the current foreground color
+                current_fg = widget.cget("foreground")
+                
+                # Map old colors to new theme colors
+                if current_fg in ["#00cc00", "#008800", "green"]:  # Correct in either theme
+                    widget.config(fg=current_theme["correct"])
+                elif current_fg in ["#ff4444", "#ff0000", "red"]:  # Incorrect in either theme
+                    widget.config(fg=current_theme["incorrect"])
+                else:  # Normal text
+                    widget.config(fg=current_theme["fg"])

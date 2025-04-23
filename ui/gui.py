@@ -46,10 +46,19 @@ class GUI:
         self.gui_elements = {
             'tk': tk,
             'root': self.root,
+            'padding_frames': [],  # Initialize an empty list for all padding frames
             **self.menu_screen.get_frames(),
             **self.game_screen.get_frames(),
             **self.results_screen.get_frames()
         }
+        
+        # Combine all padding frames from different screens into one list
+        if 'padding_frames' in self.menu_screen.get_frames():
+            self.gui_elements['padding_frames'].extend(self.menu_screen.get_frames()['padding_frames'])
+        if 'padding_frames' in self.game_screen.get_frames():
+            self.gui_elements['padding_frames'].extend(self.game_screen.get_frames()['padding_frames'])
+        if 'padding_frames' in self.results_screen.get_frames():
+            self.gui_elements['padding_frames'].extend(self.results_screen.get_frames()['padding_frames'])
         
         # Initialize stats manager
         self.stats_manager = StatsManager({
