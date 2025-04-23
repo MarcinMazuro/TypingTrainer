@@ -1,4 +1,9 @@
+"""
+Text generator for typing exercises.
+"""
+
 import random
+from config.settings import MIN_TEXT_LEN
 
 class TextGenerator:
     def __init__(self):

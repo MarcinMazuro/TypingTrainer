@@ -1,3 +1,7 @@
+"""
+Theme manager for handling application appearance.
+"""
+
 class ThemeManager:
     def __init__(self, root):
         self.root = root
@@ -20,6 +24,10 @@ class ThemeManager:
                 "incorrect": "#ff4444"
             }
         }
+        
+        # Set the initial theme on the root window
+        current_theme = self.get_current_theme()
+        self.root.config(bg=current_theme["bg"])
     
     def toggle_theme(self):
         self.is_dark_mode = not self.is_dark_mode
@@ -27,6 +35,10 @@ class ThemeManager:
     
     def get_current_theme(self):
         return self.themes["dark"] if self.is_dark_mode else self.themes["light"]
+    
+    def get_initial_bg_color(self):
+        """Get the initial background color to use for new frames."""
+        return self.get_current_theme()["bg"]
     
     def apply_theme(self, gui_elements):
         current_theme = self.get_current_theme()
@@ -42,11 +54,11 @@ class ThemeManager:
         self.root.config(bg=current_theme["bg"])
         
         # Apply theme to main frames
-        for frame_name in ['menu_frame', 'game_frame', 'results_frame']:
+        for frame_name in ['menu_frame', 'game_frame', 'results_frame', 'custom_keys_frame']:
             if frame_name in gui_elements:
                 gui_elements[frame_name].config(bg=current_theme["bg"])
         
-        # Apply theme to padding frames
+        # Apply theme to padding frames - make sure these match the background
         if 'padding_frames' in gui_elements:
             for frame in gui_elements['padding_frames']:
                 frame.config(bg=current_theme["bg"])

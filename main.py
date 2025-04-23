@@ -1,10 +1,13 @@
-from gui import GUI
+"""
+Entry point for the Typing Trainer application.
+"""
+
+from ui.gui import GUI
+from config.settings import DEFAULT_KEYS
 
 def main():
-    # Default keys that will be used in typing exercises
-    keys_to_use = "asdfghjkl;qwertyuiop"
-    
-    app = GUI(keys_to_use)
+    # Initialize the GUI with the default keys from settings
+    app = GUI(DEFAULT_KEYS)
     app.run()
 
 if __name__ == "__main__":

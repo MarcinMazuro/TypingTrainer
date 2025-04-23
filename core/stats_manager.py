@@ -1,3 +1,7 @@
+"""
+Stats manager for tracking typing performance.
+"""
+
 import time
 
 class StatsManager:
@@ -46,7 +50,7 @@ class StatsManager:
             time_str = f"Time: {minutes:02d}:{seconds:02d}"
         
         self.gui_elements['time_label'].config(text=time_str)
-        timer_id = self.gui_elements['time_label'].after(1000, self.update_timer)
+        timer_id = self.gui_elements['root'].after(1000, self.update_timer)
         self.timer_ids.append(timer_id)
     
     def calculate_wpm(self):
@@ -101,3 +105,7 @@ class StatsManager:
         # Add more color-based logic if needed
 
         self.update_stats()
+        
+    def get_elapsed_time(self):
+        """Get the elapsed time since starting."""
+        return time.time() - self.start_time
