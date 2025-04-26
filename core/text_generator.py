@@ -12,7 +12,7 @@ class TextGenerator:
     def load_english_words(self):
         """Load a list of English words from a file or use a predefined list."""
         try:
-            with open('/usr/share/dict/words', 'r') as f:
+            with open('./data/Oxford3000.txt', 'r') as f:
                 return [word.strip().lower() for word in f if word.strip().isalpha()]
         except:
             # Fallback to a basic word list
